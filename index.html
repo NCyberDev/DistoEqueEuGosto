@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Disto é que eu gosto! - Segmento de rádio com Jaime Coelho na RCM - Rádio do Concelho de Mafra">
+    <title>Disto é que eu gosto! - RCM Mafra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #c41e3a;
+            --secondary-color: #8b1538;
+            --accent-color: #f5a623;
+            --text-dark: #2c2c2c;
+            --text-light: #666;
+            --bg-light: #fafafa;
+            --bg-white: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Lora', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .radio-info {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .about-section {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .about-section h2 {
+            font-family: 'Lora', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .host-highlight {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            margin-top: 20px;
+        }
+
+        .host-highlight strong {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .recordings-section {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .recordings-section h2 {
+            font-family: 'Lora', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .episode {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .episode:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .episode h3 {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .episode audio {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .episode audio::-webkit-media-controls-panel {
+            background-color: var(--bg-white);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-logo {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 30px 15px;
+            }
+
+            .about-section,
+            .recordings-section {
+                padding: 20px;
+            }
+
+            .episode {
+                padding: 15px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Disto é que eu gosto!</h1>
+            <p class="subtitle">Um segmento especial na</p>
+            <span class="radio-info">RCM - Rádio do Concelho de Mafra (105.6 MHz)</span>
+        </header>
+
+        <section class="about-section">
+            <h2>Sobre o Segmento</h2>
+            <p>
+                "Disto é que eu gosto!" é um programa especial transmitido todos os sábados às 10h00 
+                na RCM - Rádio do Concelho de Mafra. Um espaço dedicado à música, histórias e 
+                momentos especiais que fazem parte da nossa comunidade.
+            </p>
+            <div class="host-highlight">
+                <strong>Apresentado por Jaime Coelho</strong>
+                <p style="margin-top: 10px; margin-bottom: 0;">
+                    Uma voz familiar e acolhedora que nos acompanha todas as semanas com 
+                    seleções musicais cuidadosas e conversas que aquecem o coração.
+                </p>
+            </div>
+        </section>
+
+        <section class="recordings-section">
+            <h2>Gravações Disponíveis</h2>
+            <div id="recordings-list">
+                <article class="episode">
+                    <h3>20 de Dezembro, 2025 - 10:00</h3>
+                    <audio controls preload="metadata">
+                        <source src="recordings/radio_mafra_20251220_100000.mp3" type="audio/mpeg">
+                        O seu navegador não suporta o elemento de áudio.
+                    </audio>
+                </article>
+                <article class="episode">
+                    <h3>20 de Dezembro, 2025 - 10:20</h3>
+                    <audio controls preload="metadata">
+                        <source src="recordings/radio_mafra_20251220_102051.mp3" type="audio/mpeg">
+                        O seu navegador não suporta o elemento de áudio.
+                    </audio>
+                </article>
+            </div>
+        </section>
+
+        <footer>
+            <p class="footer-logo">RCM - Rádio do Concelho de Mafra</p>
+            <p>105.6 MHz | Mafra, Portugal</p>
+            <p style="margin-top: 15px; font-size: 0.85rem;">
+                Sábados às 10h00 | "Disto é que eu gosto!"
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Auto-detect recordings and populate the list
+        // For now, this is a placeholder - recordings will be manually added
+        // In version 2, this could automatically scan the recordings folder
+        
+        // Example structure for adding recordings manually:
+        // Add episodes in the format:
+        /*
+        <article class="episode">
+            <h3>21 de Dezembro, 2024</h3>
+            <audio controls preload="metadata">
+                <source src="recordings/radio_mafra_20241221_100000.mp3" type="audio/mpeg">
+                O seu navegador não suporta o elemento de áudio.
+            </audio>
+        </article>
+        */
+    </script>
+</body>
+</html>
