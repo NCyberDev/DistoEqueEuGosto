@@ -2,6 +2,14 @@
 
 Landing page dedicada ao segmento de rádio "Disto é que eu gosto!" apresentado por Jaime Coelho na RCM - Rádio do Concelho de Mafra.
 
+## 🔗 Link (GitHub Pages)
+
+`http://ncyberdev.github.io/DistoEqueEuGosto`
+
+## 📱 QR Code (abre a página)
+
+[![QR code para http://ncyberdev.github.io/DistoEqueEuGosto](https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=http%3A%2F%2Fncyberdev.github.io%2FDistoEqueEuGosto)](http://ncyberdev.github.io/DistoEqueEuGosto)
+
 ## 🚀 Deploy para GitHub Pages
 
 ### Passo 1: Criar repositório no GitHub
