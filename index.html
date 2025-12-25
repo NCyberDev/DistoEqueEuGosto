@@ -305,8 +305,9 @@
         }
 
         .player-controls button {
-            background: none;
-            border: none;
+            /* IMPORTANT: avoid shorthand `background`/`border` here (it overrides button-specific styles) */
+            background-color: transparent;
+            border: 0;
             cursor: pointer;
             padding: 0;
             display: flex;
@@ -314,6 +315,8 @@
             justify-content: center;
             transition: transform 0.2s, opacity 0.2s;
             -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .player-controls button:active {
@@ -843,7 +846,10 @@
                 const rect = progressBarWrapper.getBoundingClientRect();
                 let clientX;
                 
-                if (e.touches && e.touches.length > 0) {
+                // Handle Pointer Events (works on iOS Safari >= 13.4 and Android Chrome)
+                if (e.pointerId !== undefined && e.clientX !== undefined) {
+                    clientX = e.clientX;
+                } else if (e.touches && e.touches.length > 0) {
                     clientX = e.touches[0].clientX;
                 } else if (e.changedTouches && e.changedTouches.length > 0) {
                     clientX = e.changedTouches[0].clientX;
@@ -879,96 +885,98 @@
                 }
             }
 
-            // Mouse events for scrubbing
-            progressBarWrapper.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                if (!audio || !audio.duration || audio.duration <= 0) {
-                    return;
-                }
-                
-                isDragging = true;
-                wasPlaying = !audio.paused;
-                if (wasPlaying) {
-                    audio.pause();
-                }
-                progressBarWrapper.classList.add('dragging');
-                setProgress(getProgressFromEvent(e));
-            });
-
-            const handleMouseMove = (e) => {
-                if (isDragging) {
+            // Scrubbing: prefer Pointer Events (works on iOS Safari >= 13.4 and Android Chrome)
+            if (window.PointerEvent) {
+                const onPointerDown = (e) => {
+                    if (!audio || !audio.duration || audio.duration <= 0) return;
                     e.preventDefault();
                     e.stopPropagation();
-                    if (audio && audio.duration && audio.duration > 0) {
-                        setProgress(getProgressFromEvent(e));
+                    isDragging = true;
+                    wasPlaying = !audio.paused;
+                    if (wasPlaying) {
+                        audio.pause();
                     }
-                }
-            };
+                    progressBarWrapper.classList.add('dragging');
+                    progressBarWrapper.setPointerCapture?.(e.pointerId);
+                    setProgress(getProgressFromEvent(e));
+                };
 
-            const handleMouseUp = (e) => {
-                if (isDragging) {
+                const onPointerMove = (e) => {
+                    if (!isDragging) return;
                     e.preventDefault();
-                    e.stopPropagation();
-                    if (audio && audio.duration && audio.duration > 0) {
-                        setProgress(getProgressFromEvent(e));
-                    }
+                    setProgress(getProgressFromEvent(e));
+                };
+
+                const onPointerUp = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    setProgress(getProgressFromEvent(e));
                     isDragging = false;
                     progressBarWrapper.classList.remove('dragging');
+                    progressBarWrapper.releasePointerCapture?.(e.pointerId);
                     if (wasPlaying && audio) {
                         audio.play().catch(err => console.error('Play failed:', err));
                     }
-                }
-            };
+                };
 
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-
-            // Touch events for mobile scrubbing
-            progressBarWrapper.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                if (!audio || !audio.duration || audio.duration <= 0) {
-                    return;
-                }
-                
-                isDragging = true;
-                wasPlaying = !audio.paused;
-                if (wasPlaying) {
-                    audio.pause();
-                }
-                progressBarWrapper.classList.add('dragging');
-                setProgress(getProgressFromEvent(e));
-            }, { passive: false });
-
-            progressBarWrapper.addEventListener('touchmove', (e) => {
-                if (isDragging) {
+                progressBarWrapper.addEventListener('pointerdown', onPointerDown, { passive: false });
+                progressBarWrapper.addEventListener('pointermove', onPointerMove, { passive: false });
+                progressBarWrapper.addEventListener('pointerup', onPointerUp, { passive: false });
+                progressBarWrapper.addEventListener('pointercancel', onPointerUp, { passive: false });
+            } else {
+                // Fallback: mouse events
+                progressBarWrapper.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (audio && audio.duration && audio.duration > 0) {
-                        setProgress(getProgressFromEvent(e));
-                    }
-                }
-            }, { passive: false });
+                    if (!audio || !audio.duration || audio.duration <= 0) return;
+                    isDragging = true;
+                    wasPlaying = !audio.paused;
+                    progressBarWrapper.classList.add('dragging');
+                    setProgress(getProgressFromEvent(e));
+                });
 
-            progressBarWrapper.addEventListener('touchend', (e) => {
-                if (isDragging) {
+                const handleMouseMove = (e) => {
+                    if (!isDragging) return;
                     e.preventDefault();
-                    e.stopPropagation();
-                    if (audio && audio.duration && audio.duration > 0) {
-                        setProgress(getProgressFromEvent(e));
-                    }
+                    setProgress(getProgressFromEvent(e));
+                };
+
+                const handleMouseUp = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    setProgress(getProgressFromEvent(e));
                     isDragging = false;
                     progressBarWrapper.classList.remove('dragging');
-                    if (wasPlaying && audio) {
-                        audio.play().catch(err => console.error('Play failed:', err));
-                    }
-                }
-            }, { passive: false });
+                };
+
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+
+                // Fallback: touch events
+                progressBarWrapper.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!audio || !audio.duration || audio.duration <= 0) return;
+                    isDragging = true;
+                    wasPlaying = !audio.paused;
+                    progressBarWrapper.classList.add('dragging');
+                    setProgress(getProgressFromEvent(e));
+                }, { passive: false });
+
+                progressBarWrapper.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    setProgress(getProgressFromEvent(e));
+                }, { passive: false });
+
+                progressBarWrapper.addEventListener('touchend', (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    setProgress(getProgressFromEvent(e));
+                    isDragging = false;
+                    progressBarWrapper.classList.remove('dragging');
+                }, { passive: false });
+            }
 
             // Audio event listeners
             // Prevent audio from resetting unexpectedly
